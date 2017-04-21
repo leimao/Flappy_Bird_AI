@@ -25,21 +25,23 @@ IMG_ROWS = 40 # number of image rows as input
 IMG_COLS = 72 # number of image columns as input 
 GAME_STATE_FRAMES = 4 # number of images stacked as input
 GAMMA = 0.99 # decay rate of past observations
-EPSILON_INITIALIZED = 0.5 # probability epsilon used to determine random actions
-EPSILON_FINAL = 0 # final epsilon after decay
+EPSILON_INITIALIZED = 1.0 # probability epsilon used to determine random actions
+EPSILON_FINAL = 0.001 # final epsilon after decay
 BATCH_SIZE = 32 # number of sample size in one minibatch
 LEARNING_RATE = 0.00001 # learning rate in deep learning
 FRAME_PER_ACTION = 1 # number of frames per action
-REPLAYS_SIZE = 500 # maximum number of replays in cache
-TRAINING_DELAY = 1000 # time steps before starting training for the purpose of collecting sufficient replays to initialize training
+REPLAYS_SIZE = 200 # maximum number of replays in cache
+TRAINING_DELAY = 2000 # time steps before starting training for the purpose of collecting sufficient replays to initialize training
 EXPLORATION_TIME = 50000 # time steps used during training before changing the epsilon
 SAVING_PERIOD = 5000 # period of time steps to save the model
-
+LOG_PERIOD = 100 # period of time steps to save the log of training
 MODEL_DIR = 'model/' # path for saving the model
+LOG_DIR = 'log/' # path for saving the training log
 
 
 class DQN_AI():
-    def __init__(self, num_actions):
+
+    def __init__(self, num_actions, mode):
     
         # Initialize the number of player actions available in the game
         self.num_actions = num_actions
@@ -51,8 +53,16 @@ class DQN_AI():
         self.game_replays = deque()
         # Initialize time_step to count the time steps during training
         self.time_step = 0
+        # Initialize the mode of AI
+        self.mode = mode
         # Initialize epsilon which controls the probability of choosing random actions
-        self.epsilon = EPSILON_INITIALIZED
+        self.epsilon = 0
+        if self.mode == 'train':
+            self.epsilon = EPSILON_INITIALIZED
+        elif self.mode == 'test'
+            self.epsilon = 0
+        else:
+            raise('AI mode error.')
         
     def Current_State_Initialze(self, observation):
     
@@ -116,8 +126,8 @@ class DQN_AI():
             next_state = minibatch[i][3]
             terminal = minibatch[i][4]
             
-            Qs_current_state = self.model.predict(self.State_Format(current_state))
-            Qs_next_state = self.model.predict(self.State_Format(next_state))
+            Qs_current_state = self.model.predict(self.State_Format(current_state))[0]
+            Qs_next_state = self.model.predict(self.State_Format(next_state))[0]
             
             inputs[i] = current_state
             targets[i] = Qs_current_state
@@ -133,7 +143,7 @@ class DQN_AI():
         # print('loss: %f' %loss)
         
         # Return training details for print
-        return loss, Qs_current_state, targets[-1] 
+        return loss, Qs_current_state.astype(np.float), targets[-1].astype(np.float)
         
     def AI_Action(self):
     
@@ -141,13 +151,21 @@ class DQN_AI():
         state_action = np.zeros(self.num_actions)
         
         if self.time_step % FRAME_PER_ACTION == 0:           
-            if random.random() <= self.epsilon:
+            if random.random() < self.epsilon:
                 # Choose random action
-                action_index = random.randint(0,self.num_actions-1)
-                state_action[action_index] = 1
+                #action_index = random.randint(0,self.num_actions-1)
+                #state_action[action_index] = 1
+                # Choose even psudorandom action specific for Flappy Bird game
+                if random.random() <= 1./5:
+                    action_index = 1
+                    state_action[action_index] = 1
+                else:
+                    action_index = 0
+                    state_action[action_index] = 1
+                              
             else:
                 # Choose the optimal action from the model
-                Qs = self.model.predict(self.State_Format(self.current_state))
+                Qs = self.model.predict(self.State_Format(self.current_state))[0]
                 action_index = np.argmax(Qs)
                 state_action[action_index] = 1
         else:
@@ -155,8 +173,9 @@ class DQN_AI():
             state_action[action_index] = 1
             
         # Update epsilon
-        if (self.time_step >= TRAINING_DELAY) and (self.time_step < (TRAINING_DELAY + EXPLORATION_TIME)):
-            self.Epsilon_Update()
+        if (self.mode == 'train') and (self.epsilon > 0):
+            if (self.time_step >= TRAINING_DELAY) and (self.time_step < (TRAINING_DELAY + EXPLORATION_TIME)):
+                self.Epsilon_Update()
             
         return state_action
     
@@ -187,7 +206,7 @@ class DQN_AI():
             minibatch = random.sample(self.game_replays, BATCH_SIZE)
             loss, Qs_predicted_example, Qs_target_example = self.Q_CNN_Train_Batch(minibatch = minibatch)
             
-        # Save the model routinely
+        # Save model routinely
         if self.time_step % SAVING_PERIOD == 0:
             if not os.path.exists(MODEL_DIR):
                 os.makedirs(MODEL_DIR)
@@ -201,7 +220,40 @@ class DQN_AI():
         else:
             stage = 'TRAINING'
             
-	    print('TIME_STEP', self.time_step, '/ STAGE', stage, '/ EPSILON', self.epsilon, '/ ACTION', np.argmax(action), '/ REWARD', reward, '/ Qs_PREDICTED_EXAMPLE', Qs_predicted_example, '/ Qs_TARGET_EXAMPLE', Qs_target_example, '/ Loss', loss)
+        print('TIME_STEP', self.time_step, '/ STAGE', stage, '/ EPSILON', self.epsilon, '/ ACTION', np.argmax(action), '/ REWARD', reward, '/ Qs_PREDICTED_EXAMPLE', Qs_predicted_example, '/ Qs_TARGET_EXAMPLE', Qs_target_example, '/ Loss', loss)
+        
+        # Save training log routinely
+        if self.time_step == 0:
+            if not os.path.exists(LOG_DIR):
+                os.makedirs(LOG_DIR)
+            # Create training log file
+            fhand = open(LOG_DIR + 'training_log.txt', 'w')
+            fhand.write('TIME_STEP\tSTAGE\tEPSILON\tACTION\tREWARD\tQs_PREDICTED_EXAMPLE\tQs_TARGET_EXAMPLE\tLoss')
+            fhand.write('\n')
+            fhand.close()
+            # Create training parameters file
+            fhand = open(LOG_DIR + 'training_parameters.txt', 'w')
+            fhand.write('IMG_ROWS\t' + str(IMG_ROWS) + '\n')
+            fhand.write('IMG_COLS\t' + str(IMG_COLS) + '\n')
+            fhand.write('GAME_STATE_FRAMES\t' + str(GAME_STATE_FRAMES) + '\n')
+            fhand.write('GAMMA\t' + str(GAMMA) + '\n')
+            fhand.write('EPSILON_INITIALIZED\t' + str(EPSILON_INITIALIZED) + '\n')
+            fhand.write('EPSILON_FINAL\t' + str(EPSILON_FINAL) + '\n')
+            fhand.write('BATCH_SIZE\t' + str(BATCH_SIZE) + '\n')
+            fhand.write('LEARNING_RATE\t' + str(LEARNING_RATE) + '\n')
+            fhand.write('FRAME_PER_ACTION\t' + str(FRAME_PER_ACTION) + '\n')
+            fhand.write('REPLAYS_SIZE\t' + str(REPLAYS_SIZE) + '\n')
+            fhand.write('TRAINING_DELAY\t' + str(TRAINING_DELAY) + '\n')
+            fhand.write('EXPLORATION_TIME\t' + str(EXPLORATION_TIME) + '\n')
+            fhand.write('SAVING_PERIOD\t' + str(SAVING_PERIOD) + '\n')
+            fhand.write('LOG_PERIOD\t' + str(LOG_PERIOD) + '\n')
+            fhand.close()
+
+        if self.time_step % LOG_PERIOD == 0:
+            fhand = open(LOG_DIR + 'training_log.txt', 'a')
+            fhand.write(str(self.time_step) + '\t' + str(stage) + '\t' + str(self.epsilon) + '\t' + str(np.argmax(action)) + '\t' + str(reward) + '\t' + str(Qs_predicted_example) + '\t' + str(Qs_target_example) + '\t' + str(loss))
+            fhand.write('\n')
+            fhand.close()
 
         # Update current state
         self.current_state = next_state
@@ -213,6 +265,7 @@ class DQN_AI():
     
         # Load the saved model
         self.model = load_model(MODEL_DIR + 'AI_model.h5')
+        
 
 
 
