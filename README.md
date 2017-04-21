@@ -11,13 +11,9 @@ Date: 4/21/2017
 ## Installation Dependence
 
 * Python 2.7
-
 * Tensorflow 1.0
-
 * Keras 2.0.3
-
 * Pygame 1.9.3
-
 * OpenCV 2.4.13
 
 ## AI Features
