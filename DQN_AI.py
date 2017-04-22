@@ -26,7 +26,7 @@ IMG_COLS = 72 # number of image columns as input
 GAME_STATE_FRAMES = 4 # number of images stacked as input
 GAMMA = 0.99 # decay rate of past observations
 EPSILON_INITIALIZED = 1.0 # probability epsilon used to determine random actions
-EPSILON_FINAL = 0.001 # final epsilon after decay
+EPSILON_FINAL = 0 # final epsilon after decay
 BATCH_SIZE = 32 # number of sample size in one minibatch
 LEARNING_RATE = 0.00001 # learning rate in deep learning
 FRAME_PER_ACTION = 1 # number of frames per action
@@ -59,7 +59,7 @@ class DQN_AI():
         self.epsilon = 0
         if self.mode == 'train':
             self.epsilon = EPSILON_INITIALIZED
-        elif self.mode == 'test'
+        elif self.mode == 'test':
             self.epsilon = 0
         else:
             raise('AI mode error.')
