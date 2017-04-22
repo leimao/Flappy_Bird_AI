@@ -8,7 +8,7 @@ Date: 4/21/2017
 
 [Flappy Bird](https://en.wikipedia.org/wiki/Flappy_bird) is a very popular video game. Here I developed an AI to play Flappy Bird using Deep Q-Learning.
 
-![](animation1.gif)
+![](flappy_bird_AI.gif)
 
 ## Installation Dependence
 
