@@ -6,7 +6,9 @@ Date: 4/21/2017
 
 ## Project Description
 
-[Flappy Bird](https://en.wikipedia.org/wiki/Flappy_bird) is a very popular video game. Here I developed an AI to play Flappy Bird using Deep Q-Learning.
+[Flappy Bird](https://en.wikipedia.org/wiki/Flappy_bird) is a very popular video game. Here I developed an AI to play Flappy Bird using Deep Q-Learning. 
+
+The AI was able to play Flappy Bird extremely well. It could play the game endlessly without failure, which might be called "perfect".
 
 ![](flappy_bird_AI.gif)
 
@@ -35,3 +37,9 @@ The AI needs to be trained before the game. To train the AI, run the command "py
 In case of a break during the training, one can resume the training by running the command "python FlappyBird_AI.py -m resume".
 
 To allow the trained AI to play the game, run the command "python FlappyBird_AI.py -m test".
+
+## Notes
+
+The training takes roughly 60,000 game frames in 36 hours on a desktop with Intel i7-6700 CPU under the parameters I specified. 
+
+Using latest GPU could accelerate the training, however I could not afford one.
