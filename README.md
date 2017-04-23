@@ -8,7 +8,7 @@ Date: 4/21/2017
 
 [Flappy Bird](https://en.wikipedia.org/wiki/Flappy_bird) is a very popular video game. Here I developed an AI to play Flappy Bird using Deep Q-Learning. 
 
-The AI was able to play Flappy Bird extremely well. It could play the game endlessly without failure, which might be called "perfect".
+The AI was able to play Flappy Bird extremely well. It could play the game endlessly without failure, which might be considered "perfect".
 
 ![](flappy_bird_AI.gif)
 
