@@ -46,6 +46,8 @@ Using latest GPU could accelerate the training, but I just could not afford one.
 
 ## Disclaimer
 
-This work is developed based on the previous works published on GitHub:
+This work was developed based on the previous works published on GitHub:
+
 https://github.com/yanpanlau/Keras-FlappyBird
+
 https://github.com/songrotek/DRL-FlappyBird
