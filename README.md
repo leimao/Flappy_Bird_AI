@@ -38,16 +38,18 @@ In case of a break during the training, one can resume the training by running t
 
 To allow the trained AI to play the game, run the command "python FlappyBird_AI.py -m test".
 
-## Notes
+## Optimization Notes
 
 The training took roughly 600,000 game frames in 36 hours on a desktop with Intel i7-6700 CPU under the parameters I specified. 
 
 Using latest GPU could accelerate the training, but I just could not afford one.
 
+<https://leimao.github.io/journal/Flappy-Bird-AI.html>
+
 ## Disclaimer
 
 This work was developed based on the previous works published on GitHub:
 
-https://github.com/yanpanlau/Keras-FlappyBird
+<https://github.com/yanpanlau/Keras-FlappyBird>
 
-https://github.com/songrotek/DRL-FlappyBird
+<https://github.com/songrotek/DRL-FlappyBird>
