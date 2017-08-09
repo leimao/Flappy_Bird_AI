@@ -32,11 +32,22 @@ Some tricks, which accelerates the training efficiency and performance, were use
 
 ## Run AI in Flappy Bird
 
-The AI needs to be trained before the game. To train the AI, run the command "python FlappyBird_AI.py -m train". The AI has already been trained and stored as AI_model.h5 file if you do not want to do the training.
+The AI needs to be trained before the game. To train the AI, run the command:
+```shell
+python FlappyBird_AI.py -m train
+```
 
-In case of a break during the training, one can resume the training by running the command "python FlappyBird_AI.py -m resume".
+The AI has already been trained and stored as AI_model.h5 file if you do not want to do the training.
 
-To allow the trained AI to play the game, run the command "python FlappyBird_AI.py -m test".
+In case of a break during the training, one can resume the training by running the command:
+```shell
+python FlappyBird_AI.py -m resume
+```
+
+To allow the trained AI to play the game, run the command:
+```shell
+python FlappyBird_AI.py -m test
+```
 
 ## Optimization Notes
 
