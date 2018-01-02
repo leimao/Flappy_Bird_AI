@@ -20,6 +20,10 @@ The AI was able to play Flappy Bird extremely well. It could play the game endle
 * Pygame 1.9.3
 * OpenCV 2.4.13
 
+## Update
+
+12/13/2017: The Flappy Bird AI now supports Python 3! The source codes are in the "Flappy_Bird_AI_py3" directory.
+
 ## AI Features
 
 The Flappy Bird AI was developed using Deep Convolutional Q-Learning Neural Network. 
