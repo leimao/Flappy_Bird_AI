@@ -22,7 +22,7 @@ The AI was able to play Flappy Bird extremely well. It could play the game endle
 
 ## Update
 
-12/13/2017: The Flappy Bird AI now supports Python 3! The source codes are in the "Flappy_Bird_AI_py3" directory.
+1/2/2018: The Flappy Bird AI now supports Python 3! The source codes are in the "Flappy_Bird_AI_py3" directory.
 
 ## AI Features
 
