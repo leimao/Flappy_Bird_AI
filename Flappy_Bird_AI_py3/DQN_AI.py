@@ -118,7 +118,7 @@ class DQN_AI():
         targets = np.zeros((len(minibatch), self.num_actions))
         
         # Prepare inputs and calculate targets
-        for i in xrange(len(minibatch)):
+        for i in range(len(minibatch)):
         
             current_state = minibatch[i][0]
             state_action = minibatch[i][1]
